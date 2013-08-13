@@ -130,7 +130,7 @@ function OneClickBlock5P_RefreshCountAndJumpToNext()
 }
 function OneClickBlock5P_BlockFinished()
 {
-	logText += '<br/><hr width="100%"/></body></html>';
+	logText += '<br/>完成日期及時間：' + runDate.toLocaleDateString() + ' ' + runDate.toLocaleTimeString() + '<hr width="100%"/></body></html>';
 	var OneClickBlock5P_FinishHTML = '完成！<br/><br/>總數 ' + OneClickBlock5P_UserId.length + ' | 成功 ' + OneClickBlock5P_SuccessBlockCount + ' | 錯誤 ' + OneClickBlock5P_ErrorBlockCount + ' | 已存在 ' + OneClickBlock5P_AlreadyBlockedCount + '<br /><a href="data:text/html;charset=utf-8,' + encodeURI(logText) + '" target="_blank" download="OneClickBlock5P_log.txt">如需詳細記錄請按此開新頁查看或儲存。</a><br /><div style="text-align: center;"><button type="button" onClick="OneClickBlock5P_Dispose()">關閉</button>';
 	OneClickBlock5P_cOut(OneClickBlock5P_FinishHTML);
 }
