@@ -18,10 +18,13 @@ function OneClickBlock5P_Dispose()
 	else
 	{
 		document.getElementById('OneClickBlock5P_Container').style.cursor="default";
-		document.getElementById('topFunc').innerHTML = '';
+		document.getElementsByTagName('body')[0].removeChild(document.getElementById('OneClickBlock5PInterface'));
 	}
 }
-document.getElementById('topFunc').innerHTML = '<div id="OneClickBlock5P_Background" style="width: 100%; height: 100%; position: fixed; left: 0; top: 0; background-color: #000000; opacity: 0.5;"></div><div id="OneClickBlock5P_Container" style="position: fixed; left: 50%; top: 50%; margin: -50px 0 0 -150px; padding: 10px 10px 10px 10px; width: 300px; height: 100px; background-color: #999999; border: 1px solid #333333; color: #000000; ">Loading</div>';
+var OneClickBlock5PInterface = document.createElement('div');
+OneClickBlock5PInterface.id = 'OneClickBlock5PInterface';
+OneClickBlock5PInterface.innerHTML = '<div id="OneClickBlock5P_Background" style="width: 100%; height: 100%; position: fixed; left: 0; top: 0; background-color: #000000; opacity: 0.5;"></div><div id="OneClickBlock5P_Container" style="position: fixed; left: 50%; top: 50%; margin: -50px 0 0 -150px; padding: 10px 10px 10px 10px; width: 300px; height: 100px; background-color: #999999; border: 1px solid #333333; color: #000000; ">Loading</div>';
+document.getElementsByTagName('body')[0].appendChild(OneClickBlock5PInterface);
 function OneClickBlock5P_cOut(text)
 {
 	document.getElementById('OneClickBlock5P_Container').innerHTML = text;
