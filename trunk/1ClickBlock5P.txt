@@ -1,0 +1,1 @@
+﻿javascript:(function(){OneClickBlock5PLoader = document.createElement('script');OneClickBlock5PLoader.type = 'text/javascript';OneClickBlock5PLoader.src = 'http://hkgsherlock.no-ip.org/1ClickBlock5P.js';document.getElementsByTagName('head')[0].appendChild(OneClickBlock5PLoader)})();

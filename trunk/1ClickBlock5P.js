@@ -9,15 +9,17 @@ var logText = '<html><head></head><body>一鍵 Block 5P 腳本<hr width="100%"/>執行
 var OneClickBlock5P_BlockingWorking = false;
 function OneClickBlock5P_Dispose()
 {
-	/*if(OneClickBlock5P_BlockingWorking)
+	if(OneClickBlock5P_BlockingWorking)
 	{
 		OneClickBlock5P_AwaitingToDisposeFlag = true;
+		OneClickBlock5P_RefreshBlockStatusTitle(OneClickBlock5P_GetBlockStatusTitle().replace('執行中','正在取消，請稍候'));
+		document.getElementById('OneClickBlock5P_Container').style.cursor="wait";
 	}
 	else
 	{
+		document.getElementById('OneClickBlock5P_Container').style.cursor="default";
 		document.getElementById('topFunc').innerHTML = '';
-	}*/
-	document.getElementById('topFunc').innerHTML = '';
+	}
 }
 document.getElementById('topFunc').innerHTML = '<div id="OneClickBlock5P_Background" style="width: 100%; height: 100%; position: fixed; left: 0; top: 0; background-color: #000000; opacity: 0.5;"></div><div id="OneClickBlock5P_Container" style="position: fixed; left: 50%; top: 50%; margin: -50px 0 0 -150px; padding: 10px 10px 10px 10px; width: 300px; height: 100px; background-color: #999999; border: 1px solid #333333; color: #000000; ">Loading</div>';
 function OneClickBlock5P_cOut(text)
@@ -26,18 +28,26 @@ function OneClickBlock5P_cOut(text)
 }
 function OneClickBlock5P_InitialiseBlockUI()
 {
-	var OneClickBlock5P_BlockingHTML = '執行中……<br/><br/><div id="OneClickBlock5P_StatusText">StatusText</div><br/><div style="width: 100%; height: 22px;"><div id="OneClickBlock5P_ProgressBarBackground" style="border: 1px solid; margin: 0 60px -22px 0; height: 100%;"><div id="OneClickBlock5P_ProgressBarForeground" style="background-color: #0000cc; width: 0; height: 100%;"></div></div>&nbsp;<button type="button" style="width: 50px; height: 100%; float: right;" onclick="OneClickBlock5P_Dispose()">取消</button></div>';
+	var OneClickBlock5P_BlockingHTML = '<div id="OneClickBlock5P_StatusTitle">執行中……(0%)</div><br/><div id="OneClickBlock5P_StatusText">StatusText</div><br/><div style="width: 100%; height: 22px;"><div id="OneClickBlock5P_ProgressBarBackground" style="border: 1px solid; margin: 0 60px -22px 0; height: 100%;"><div id="OneClickBlock5P_ProgressBarForeground" style="background-color: #0000cc; width: 0; height: 100%;"></div></div>&nbsp;<button type="button" style="width: 50px; height: 100%; float: right;" onclick="OneClickBlock5P_Dispose()">取消</button></div>';
 	OneClickBlock5P_cOut(OneClickBlock5P_BlockingHTML);
 }
 var OneClickBlock5P_ConfirmHTML = '你是否確定要將所有 5P 契弟一次過 Block 清？<br />在本腳本執行期間你可以隨時終止動作。<br/><p style="text-align: center;"><button type="button" onclick="OneClickBlock5P_InitialiseBlockUI(); OneClickBlock5P_DoBlockNextUserId();">確定</button>&nbsp;<button onclick="OneClickBlock5P_Dispose()">取消</button></p>';
 OneClickBlock5P_cOut(OneClickBlock5P_ConfirmHTML);
+function OneClickBlock5P_GetBlockStatusTitle()
+{
+	return document.getElementById('OneClickBlock5P_StatusTitle').innerHTML;
+}
+function OneClickBlock5P_RefreshBlockStatusTitle(text)
+{
+	document.getElementById('OneClickBlock5P_StatusTitle').innerHTML = text;
+}
 function OneClickBlock5P_RefreshBlockStatusText(text)
 {
 	document.getElementById('OneClickBlock5P_StatusText').innerHTML = text;
 }
 function OneClickBlock5P_RefreshBlockStatusPercentage(percentage)
 {
-	document.getElementById('OneClickBlock5P_ProgressBarForeground').width = percentage * 100 + "%";
+	document.getElementById('OneClickBlock5P_ProgressBarForeground').style.width = Math.round(percentage * 100) + "%";
 }
 var OneClickBlock5P_AwaitingToDisposeFlag = false;
 var OneClickBlock5P_BlockingIndex = -1;
@@ -63,25 +73,18 @@ function OneClickBlock5P_DoBlockNextUserId()
 		var goodResult = false;
 		var resultObject = new Object();
 		MessageFunc.BlockUser(OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex], OneClickBlock5P_GoodResult, OneClickBlock5P_BadResult);
-		OneClickBlock5P_OnBlockUserSucceeded();
+		
 	}
 }
 function OneClickBlock5P_GoodResult(result)
 {
-	if (result.errMsg != "") {
+	/*if (result.errMsg != "") {
 		document.getElementById('bottomFunc').innerHTML = result.errMsg;
 	} else {
 		document.getElementById('bottomFunc').innerHTML = '';
 	        blocked_list = result.list;
 	        CheckBlockedUser();
-	}
-}
-function OneClickBlock5P_BadResult(result)
-{
-	document.getElementById('bottomFunc').innerHTML = '發生伺服器錯誤。請屌 @min。';
-}
-function OneClickBlock5P_OnBlockUserSucceeded()
-{
+	}*/
 	var msg = document.getElementById('bottomFunc').innerHTML;
 	OneClickBlock5P_BlockingWorking = false;
 	if (msg == 'The user is already blocked before.')
@@ -92,7 +95,7 @@ function OneClickBlock5P_OnBlockUserSucceeded()
 	}
 	else if (msg != '')
 	{
-		OneClickBlock5P_RefreshBlockStatusText(OneClickBlock5P_BlockingIdAsText + ': 錯誤：' + msg);
+		OneClickBlock5P_RefreshBlockStatusText(OneClickBlock5P_BlockingIdAsText + ': 錯誤：發生伺服器錯誤。請屌 @min。');
 		OneClickBlock5P_ErrorBlockCount++;
 		logText += '錯誤："' + msg + '"</br>';
 	}
@@ -102,7 +105,19 @@ function OneClickBlock5P_OnBlockUserSucceeded()
 		OneClickBlock5P_SuccessBlockCount++;
 		logText += '成功<br/>';
 	}
+	OneClickBlock5P_RefreshCountAndJumpToNext();
+}
+function OneClickBlock5P_BadResult(result)
+{
+	OneClickBlock5P_RefreshBlockStatusText(OneClickBlock5P_BlockingIdAsText + ': 錯誤：發生伺服器錯誤。請屌 @min。(' +  + ')');
+	OneClickBlock5P_ErrorBlockCount++;
+	logText += '錯誤："' + msg + '"</br>';
+	OneClickBlock5P_RefreshCountAndJumpToNext();
+}
+function OneClickBlock5P_RefreshCountAndJumpToNext()
+{
 	OneClickBlock5P_RefreshBlockStatusPercentage(OneClickBlock5P_BlockingIndex / OneClickBlock5P_UserId.length);
+	OneClickBlock5P_RefreshBlockStatusTitle('執行中……(' + Math.round(OneClickBlock5P_BlockingIndex / OneClickBlock5P_UserId.length * 100) + '%)');
 	if (OneClickBlock5P_BlockingIndex + 1 < OneClickBlock5P_UserId.length)
 	{
 		OneClickBlock5P_DoBlockNextUserId();
