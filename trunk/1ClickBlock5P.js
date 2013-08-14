@@ -3,7 +3,6 @@ var OneClickBlock5PArrayLoader = document.createElement('script');
 OneClickBlock5PArrayLoader.type = 'text/javascript';
 OneClickBlock5PArrayLoader.src = 'http://hkg-oneclickblock5p.googlecode.com/svn/trunk/array.js';
 document.getElementsByTagName('head')[0].appendChild(OneClickBlock5PArrayLoader);
-
 var runDate = new Date();
 var logText = '<html><head></head><body>一鍵 Block 5P 腳本<hr width="100%"/>瀏覽器 User-Agent：' + navigator.userAgent + '<br/>執行日期及時間：' + runDate.toLocaleDateString() + ' ' + runDate.toLocaleTimeString() + '</br>以下為所有在腳本中指定用戶的結果： [userid, result]</br>';
 var OneClickBlock5P_BlockingWorking = false;
@@ -29,9 +28,13 @@ function OneClickBlock5P_cOut(text)
 {
 	document.getElementById('OneClickBlock5P_Container').innerHTML = text;
 }
+function OneClickBlock5P_forcelog()
+{
+	window.open('data:text/html;charset=utf-8,'+encodeURI(logText),'_blank');
+}
 function OneClickBlock5P_InitialiseBlockUI()
 {
-	var OneClickBlock5P_BlockingHTML = '<div id="OneClickBlock5P_StatusTitle">執行中……(0%)</div><br/><div id="OneClickBlock5P_StatusText">StatusText</div><br/><div style="width: 100%; height: 22px;"><div id="OneClickBlock5P_ProgressBarBackground" style="border: 1px solid; margin: 0 60px -22px 0; height: 100%;"><div id="OneClickBlock5P_ProgressBarForeground" style="background-color: #0000cc; width: 0; height: 100%;"></div></div>&nbsp;<button type="button" style="width: 50px; height: 100%; float: right;" onclick="OneClickBlock5P_Dispose()">取消</button></div>';
+	var OneClickBlock5P_BlockingHTML = '<div id="OneClickBlock5P_forcelog" style="position: relative; right: 0; top: 0; float: right; font-size: 5px;"><a href="javascript:OneClickBlock5P_forcelog();">log</a></div><div id="OneClickBlock5P_StatusTitle">執行中……(0%)</div><br/><div id="OneClickBlock5P_StatusText">StatusText</div><br/><div style="width: 100%; height: 22px;"><div id="OneClickBlock5P_ProgressBarBackground" style="border: 1px solid; margin: 0 60px -22px 0; height: 100%;"><div id="OneClickBlock5P_ProgressBarForeground" style="background-color: #0000cc; width: 0; height: 100%;"></div></div>&nbsp;<button type="button" style="width: 50px; height: 100%; float: right;" onclick="OneClickBlock5P_Dispose()">取消</button></div>';
 	OneClickBlock5P_cOut(OneClickBlock5P_BlockingHTML);
 }
 var OneClickBlock5P_ConfirmHTML = '你是否確定要將所有 5P 契弟一次過 Block 清？<br />在本腳本執行期間你可以隨時終止動作。<br/><p style="text-align: center;"><button type="button" onclick="OneClickBlock5P_InitialiseBlockUI(); OneClickBlock5P_DoBlockNextUserId();">確定</button>&nbsp;<button onclick="OneClickBlock5P_Dispose()">取消</button></p>';
@@ -53,6 +56,7 @@ function OneClickBlock5P_RefreshBlockStatusPercentage(percentage)
 	document.getElementById('OneClickBlock5P_ProgressBarForeground').style.width = Math.round(percentage * 100) + "%";
 }
 var OneClickBlock5P_AwaitingToDisposeFlag = false;
+var OneClickBlock5P_ThisBlockStartTime = new Date();
 var OneClickBlock5P_BlockingIndex = -1;
 var OneClickBlock5P_BlockingIdAsText = '';
 var OneClickBlock5P_SuccessBlockCount = 0;
@@ -60,6 +64,13 @@ var OneClickBlock5P_AlreadyBlockedCount = 0;
 var OneClickBlock5P_ErrorBlockCount = 0;
 var OneClickBlock5P_BlockResult = [];
 var OneClickBlock5P_BlockErrorText = [];
+function OneClickBlock5P_cOutCostTime()
+{
+	var lastMs = (OneClickBlock5P_ThisBlockStartTime.getMinutes() * 60 + OneClickBlock5P_ThisBlockStartTime.getSeconds() * 1000) + OneClickBlock5P_ThisBlockStartTime.getMilliseconds();
+	var d = new Date();
+	var thisMs = (d.getMinutes() * 60 + d.getSeconds() * 1000) + d.getMilliseconds();
+	return thisMs - lastMs;
+}
 function OneClickBlock5P_DoBlockNextUserId()
 {
 	if(OneClickBlock5P_AwaitingToDisposeFlag)
@@ -76,6 +87,7 @@ function OneClickBlock5P_DoBlockNextUserId()
 		var goodResult = false;
 		var resultObject = new Object();
 		MessageFunc.BlockUser(OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex], OneClickBlock5P_GoodResult, OneClickBlock5P_BadResult);
+		OneClickBlock5P_ThisBlockStartTime = new Date();
 		
 	}
 }
@@ -88,6 +100,7 @@ function OneClickBlock5P_GoodResult(result)
 	        blocked_list = result.list;
 	        CheckBlockedUser();
 	}*/
+	logText += '(' + OneClickBlock5P_cOutCostTime() + 'ms) '
 	var msg = document.getElementById('bottomFunc').innerHTML;
 	OneClickBlock5P_BlockingWorking = false;
 	if (msg == 'The user is already blocked before.')
@@ -134,6 +147,6 @@ function OneClickBlock5P_RefreshCountAndJumpToNext()
 function OneClickBlock5P_BlockFinished()
 {
 	logText += '<br/>完成日期及時間：' + runDate.toLocaleDateString() + ' ' + runDate.toLocaleTimeString() + '<hr width="100%"/></body></html>';
-	var OneClickBlock5P_FinishHTML = '完成！<br/><br/>總數 ' + OneClickBlock5P_UserId.length + ' | 成功 ' + OneClickBlock5P_SuccessBlockCount + ' | 錯誤 ' + OneClickBlock5P_ErrorBlockCount + ' | 已存在 ' + OneClickBlock5P_AlreadyBlockedCount + '<br /><a href="data:text/html;charset=utf-8,' + encodeURI(logText) + '" target="_blank" download="OneClickBlock5P_log.txt">如需詳細記錄請按此開新頁查看或儲存。</a><br /><div style="text-align: center;"><button type="button" onClick="OneClickBlock5P_Dispose()">關閉</button>';
+	var OneClickBlock5P_FinishHTML = '完成！<br/><br/>總數 ' + OneClickBlock5P_UserId.length + ' | 成功 ' + OneClickBlock5P_SuccessBlockCount + ' | 錯誤 ' + OneClickBlock5P_ErrorBlockCount + ' | 已存在 ' + OneClickBlock5P_AlreadyBlockedCount + '<br /><a href="data:text/html;charset=utf-8,' + encodeURI(logText) + '" target="_blank" download="OneClickBlock5P_log.htm">如需詳細記錄請按此開新頁查看或儲存。</a><br /><div style="text-align: center;"><button type="button" onClick="OneClickBlock5P_Dispose()">關閉</button>';
 	OneClickBlock5P_cOut(OneClickBlock5P_FinishHTML);
 }
