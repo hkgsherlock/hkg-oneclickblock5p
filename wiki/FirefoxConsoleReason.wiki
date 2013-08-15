@@ -12,7 +12,5 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=656433
   The change this bug will make is to disallow loading of javascript: URLs from the URL bar '*'at all'*'.  This behavior varies slightly from IE 9 which strips the leading "javascript:" from a pasted URL, and Chrome which does something similar.
   
   The approach in this bug *still enables* bookmarklet functionality through bookmarks as well as *entering them on the Web Console or Error Console*.
-
 ...
-
   Disabling only pastes '*'will'*' *reduce the success rate of these attacks (impossible to say by how much)*. Disabling entering javascript: URIs in the location bar entirely *will reduce the success rate further (impossible to say how much further)*, by eliminating the "type this prefix yourself and then paste this" variants, at the cost of breaking functionality that some users (a minority) have come to depend on (e.g. loading simple data: URIs to test something quickly). Evaluating that tradeoff isn't trivial, and given the "impossible to says", it's very subjective.
