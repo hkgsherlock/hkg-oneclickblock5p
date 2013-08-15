@@ -28,12 +28,18 @@ function OneClickBlock5P_Dispose()
 		document.title = OneClickBlock5P_oTitle;
 		document.getElementById('OneClickBlock5P_Container').style.cursor="default";
 		document.getElementsByTagName('body')[0].removeChild(document.getElementById('OneClickBlock5PInterface'));
-		var OneClickBlock5PLoader = document.createElement('script');
-		OneClickBlock5PLoader.type = 'text/javascript';
-		OneClickBlock5PLoader.src = 'http://hkg-oneclickblock5p.googlecode.com/svn/trunk/1ClickBlock5P.js';
-		document.getElementsByTagName('head')[0].removeChild(OneClickBlock5PLoader);
-		document.getElementsByTagName('head')[0].removeChild(OneClickBlock5PBlockArrayLoader);
-		document.getElementsByTagName('head')[0].removeChild(OneClickBlock5PUnblockArrayLoader);
+		/*
+		var scriptSrcToRemove = ['http://hkg-oneclickblock5p.googlecode.com/svn/trunk/1ClickBlock5P.js', 'http://hkg-oneclickblock5p.googlecode.com/svn/trunk/array.js', 'http://hkg-oneclickblock5p.googlecode.com/svn/trunk/unblock_array.js'];
+		for (var i = 0; i < document.getElementsByTagName('head')[0].getElementsByTagName('script').length; i++)
+		{
+			for (var j = 0; j = scriptSrcToRemove; j++)
+			{
+				var currNode = document.getElementsByTagName('head')[0].getElementsByTagName('script')[i];
+				if (currNode.getAttribute('src') == scriptSrcToRemove[j])
+					document.getElementsByTagName('head')[0].removeChild(currNode);
+			}
+		}
+		*/
 	}
 }
 var OneClickBlock5PInterface = document.createElement('div');
@@ -106,6 +112,7 @@ function OneClickBlock5P_DoUnblockNextUserId()
 		OneClickBlock5P_RefreshWorkStatusText('-' + OneClickBlock5P_WorkingIdAsText + ': ' + '正等候伺服器回應中……');
 		// var goodResult = false;
 		// var resultObject = new Object();
+		OneClickBlock5P_HelianthusAnnuus_SwitchBam(OneClickBlock5P_UnblockUserId[OneClickBlock5P_UnblockingIndex], false);
 		MessageFunc.RemoveBlockUser(OneClickBlock5P_UnblockUserId[OneClickBlock5P_UnblockingIndex], OneClickBlock5P_UnblockGoodResult, OneClickBlock5P_UnblockBadResult);
 		OneClickBlock5P_ThisWorkStartTime = new Date();
 	}
@@ -153,6 +160,7 @@ function OneClickBlock5P_DoBlockNextUserId()
 		OneClickBlock5P_RefreshWorkStatusText('+' + OneClickBlock5P_WorkingIdAsText + ': ' + '正等候伺服器回應中……');
 		// var goodResult = false;
 		// var resultObject = new Object();
+		OneClickBlock5P_HelianthusAnnuus_SwitchBam(OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex], true);
 		MessageFunc.BlockUser(OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex], OneClickBlock5P_BlockGoodResult, OneClickBlock5P_BlockBadResult);
 		OneClickBlock5P_ThisWorkStartTime = new Date();
 	}
@@ -194,6 +202,34 @@ function OneClickBlock5P_BlockBadResult(result)
 	OneClickBlock5P_ErrorBlockCount++;
 	OneClickBlock5P_logText += '錯誤："' + result.errMsg + '"</br>';
 	OneClickBlock5P_RefreshCountAndJumpToNext();
+}
+
+// Helianthus-Annuus Support 
+function OneClickBlock5P_HelianthusAnnuus_SwitchBam(userid, toBam)
+{
+	var bamList = [];
+	if (typeof AN.util.data('aBamList') !== 'undefined' && AN.util.data('aBamList') != null && AN.util.data('aBamList').length > 0)
+	{
+		bamList = AN.util.data('aBamList'); // JS can't access into jQ's function -- access the real object instead
+	}
+	var index = bamList.indexOf(userid); // ~= var index = $.inArray(userid, bamList); in jQuery ---- You know I won't play jQ trick this time
+	if(index === -1)
+	{
+		if(toBam)
+		{
+			bamList.push(userid);
+		}
+	}
+	else
+	{
+		if(!toBam)
+		{
+			bamList.splice(index, 1);
+		}
+	}
+	
+	AN.util.data('aBamList', bamList); // jQ core func
+//	toggleReplies(null); // can't, jQ func
 }
 
 // jump to next userid
