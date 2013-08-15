@@ -5,7 +5,7 @@ http://stackoverflow.com/questions/10000862/javascript-not-running-from-address-
 
 http://stackoverflow.com/questions/7375288/firefox-6-javascript-in-addressbar
 
-  Indeed, using the Web Console (Ctrl-Shift-K) is the preferred way to run JavaScript now. 
+  Indeed, using the Web Console (Ctrl-Shift-K) is the preferred way to run !JavaScript now. 
 
 https://bugzilla.mozilla.org/show_bug.cgi?id=656433
 
