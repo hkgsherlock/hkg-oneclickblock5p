@@ -1,12 +1,14 @@
 // load the array list from the SVN trunk
 // Block List
 var OneClickBlock5PBlockArrayLoader = document.createElement('script');
-OneClickBlock5PBlockArrayLoader.type = 'text/javascript';
+OneClickBlock5PBlockArrayLoader.type = 'application/javascript';
+OneClickBlock5PBlockArrayLoader.id = 'OneClickBlock5PBlockArrayLoaderScript';
 OneClickBlock5PBlockArrayLoader.src = 'http://hkg-oneclickblock5p.googlecode.com/svn/trunk/array.js';
 document.getElementsByTagName('head')[0].appendChild(OneClickBlock5PBlockArrayLoader);
 // Unblock list
 var OneClickBlock5PUnblockArrayLoader = document.createElement('script');
-OneClickBlock5PUnblockArrayLoader.type = 'text/javascript';
+OneClickBlock5PUnblockArrayLoader.type = 'application/javascript';
+OneClickBlock5PUnblockArrayLoader.id = 'OneClickBlock5PUnblockArrayLoaderScript';
 OneClickBlock5PUnblockArrayLoader.src = 'http://hkg-oneclickblock5p.googlecode.com/svn/trunk/unblock_array.js';
 document.getElementsByTagName('head')[0].appendChild(OneClickBlock5PUnblockArrayLoader);
 
@@ -28,18 +30,11 @@ function OneClickBlock5P_Dispose()
 		document.title = OneClickBlock5P_oTitle;
 		document.getElementById('OneClickBlock5P_Container').style.cursor="default";
 		document.getElementsByTagName('body')[0].removeChild(document.getElementById('OneClickBlock5PInterface'));
-		/*
-		var scriptSrcToRemove = ['http://hkg-oneclickblock5p.googlecode.com/svn/trunk/1ClickBlock5P.js', 'http://hkg-oneclickblock5p.googlecode.com/svn/trunk/array.js', 'http://hkg-oneclickblock5p.googlecode.com/svn/trunk/unblock_array.js'];
-		for (var i = 0; i < document.getElementsByTagName('head')[0].getElementsByTagName('script').length; i++)
+		var ScriptNodeToRemoveById = ['OneClickBlock5PLoaderScript', 'OneClickBlock5PBlockArrayLoaderScript', 'OneClickBlock5PUnblockArrayLoaderScript'];
+		for (var i = 0; i < ScriptNodeToRemoveById.length; i++)
 		{
-			for (var j = 0; j = scriptSrcToRemove; j++)
-			{
-				var currNode = document.getElementsByTagName('head')[0].getElementsByTagName('script')[i];
-				if (currNode.getAttribute('src') == scriptSrcToRemove[j])
-					document.getElementsByTagName('head')[0].removeChild(currNode);
-			}
+			if(document.getElementById(ScriptNodeToRemoveById[i]) != null) document.getElementById(ScriptNodeToRemoveById[i]).parentNode.removeChild(document.getElementById(ScriptNodeToRemoveById[i]));
 		}
-		*/
 	}
 }
 var OneClickBlock5PInterface = document.createElement('div');
@@ -110,9 +105,11 @@ function OneClickBlock5P_DoUnblockNextUserId()
 		OneClickBlock5P_WorkingIdAsText = OneClickBlock5P_UnblockUserId[OneClickBlock5P_UnblockingIndex];
 		OneClickBlock5P_logText +=  '-' + OneClickBlock5P_WorkingIdAsText + ': ';
 		OneClickBlock5P_RefreshWorkStatusText('-' + OneClickBlock5P_WorkingIdAsText + ': ' + '正等候伺服器回應中……');
-		// var goodResult = false;
-		// var resultObject = new Object();
-//		OneClickBlock5P_HelianthusAnnuus_SwitchBam(OneClickBlock5P_UnblockUserId[OneClickBlock5P_UnblockingIndex], false);
+		
+		if(OneClickBlock5P_HelianthusAnnuus_Exist())
+		{
+			OneClickBlock5P_HelianthusAnnuus_SwitchBam(OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex], true);
+		}
 		MessageFunc.RemoveBlockUser(OneClickBlock5P_UnblockUserId[OneClickBlock5P_UnblockingIndex], OneClickBlock5P_UnblockGoodResult, OneClickBlock5P_UnblockBadResult);
 		OneClickBlock5P_ThisWorkStartTime = new Date();
 	}
@@ -158,9 +155,11 @@ function OneClickBlock5P_DoBlockNextUserId()
 		OneClickBlock5P_WorkingIdAsText = OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex];
 		OneClickBlock5P_logText += '+' + OneClickBlock5P_WorkingIdAsText + ': ';
 		OneClickBlock5P_RefreshWorkStatusText('+' + OneClickBlock5P_WorkingIdAsText + ': ' + '正等候伺服器回應中……');
-		// var goodResult = false;
-		// var resultObject = new Object();
-//		OneClickBlock5P_HelianthusAnnuus_SwitchBam(OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex], true);
+		
+		if(OneClickBlock5P_HelianthusAnnuus_Exist())
+		{
+			OneClickBlock5P_HelianthusAnnuus_SwitchBam(OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex], true);
+		}
 		MessageFunc.BlockUser(OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex], OneClickBlock5P_BlockGoodResult, OneClickBlock5P_BlockBadResult);
 		OneClickBlock5P_ThisWorkStartTime = new Date();
 	}
@@ -205,6 +204,13 @@ function OneClickBlock5P_BlockBadResult(result)
 }
 
 // Helianthus-Annuus Support 
+function OneClickBlock5P_HelianthusAnnuus_Exist()
+{
+	if(typeof AN !== 'undefined')
+		if(AN.util.data('aBamList') != null) return true;
+	
+	return false;
+}
 function OneClickBlock5P_HelianthusAnnuus_SwitchBam(userid, toBam)
 {
 	var bamList = [];
