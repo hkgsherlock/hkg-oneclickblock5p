@@ -112,7 +112,7 @@ function OneClickBlock5P_DoUnblockNextUserId()
 		OneClickBlock5P_RefreshWorkStatusText('-' + OneClickBlock5P_WorkingIdAsText + ': ' + '正等候伺服器回應中……');
 		// var goodResult = false;
 		// var resultObject = new Object();
-		OneClickBlock5P_HelianthusAnnuus_SwitchBam(OneClickBlock5P_UnblockUserId[OneClickBlock5P_UnblockingIndex], false);
+//		OneClickBlock5P_HelianthusAnnuus_SwitchBam(OneClickBlock5P_UnblockUserId[OneClickBlock5P_UnblockingIndex], false);
 		MessageFunc.RemoveBlockUser(OneClickBlock5P_UnblockUserId[OneClickBlock5P_UnblockingIndex], OneClickBlock5P_UnblockGoodResult, OneClickBlock5P_UnblockBadResult);
 		OneClickBlock5P_ThisWorkStartTime = new Date();
 	}
@@ -160,7 +160,7 @@ function OneClickBlock5P_DoBlockNextUserId()
 		OneClickBlock5P_RefreshWorkStatusText('+' + OneClickBlock5P_WorkingIdAsText + ': ' + '正等候伺服器回應中……');
 		// var goodResult = false;
 		// var resultObject = new Object();
-		OneClickBlock5P_HelianthusAnnuus_SwitchBam(OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex], true);
+//		OneClickBlock5P_HelianthusAnnuus_SwitchBam(OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex], true);
 		MessageFunc.BlockUser(OneClickBlock5P_UserId[OneClickBlock5P_BlockingIndex], OneClickBlock5P_BlockGoodResult, OneClickBlock5P_BlockBadResult);
 		OneClickBlock5P_ThisWorkStartTime = new Date();
 	}
